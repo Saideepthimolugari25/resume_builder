@@ -3,13 +3,12 @@ import os
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
+from datetime import datetime
+from typing import Dict, List, Union
 
 import httpx
 import logging
-from datetime import datetime
-from typing import Dict, List, Union
 from dotenv import load_dotenv
-
 
 from langchain_core.messages.ai import AIMessage
 from langchain_core.prompt_values import StringPromptValue
@@ -19,31 +18,22 @@ from lib_resume_builder_AIHawk.config import global_config
 load_dotenv()
 
 log_folder = 'log'
-if not os.path.exists(log_folder):
-    os.makedirs(log_folder)
-
-# Configure the log file
+os.makedirs(log_folder, exist_ok=True)
 log_file = os.path.join(log_folder, 'app.log')
 
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(log_file, encoding='utf-8')
-    ]
+    handlers=[logging.FileHandler(log_file, encoding='utf-8')]
 )
-
 logger = logging.getLogger(__name__)
-
-
 
 
 class AIModel(ABC):
     @abstractmethod
     def invoke(self, prompt: str) -> str:
         pass
-
 
 
 class AIAdapter:
@@ -54,11 +44,9 @@ class AIAdapter:
         llm_model_type = global_config.LLM_MODEL_TYPE
         llm_model = global_config.LLM_MODEL
         llm_api_url = global_config.LLM_API_URL
-        print('Using {0} with {1} from {2}'.format(
-            llm_model_type, llm_model, llm_api_url))
+        logger.info('Using {0} with {1} from {2}'.format(llm_model_type, llm_model, llm_api_url))
 
         if llm_model_type == "openai":
-            print(global_config.API_KEY, llm_model, llm_api_url)
             return OpenAIModel(global_config.API_KEY, llm_model, llm_api_url)
         elif llm_model_type == "claude":
             return ClaudeModel(global_config.API_KEY, llm_model, llm_api_url)
@@ -115,11 +103,10 @@ class GeminiModel(AIModel):
 class GPT:
     def __init__(self, llm: Union[OpenAIModel, OllamaModel, ClaudeModel, GeminiModel]):
         self.llm = llm
-        logger.debug(
-            "LoggerChatModel successfully initialized with LLM: %s", llm)
+        logger.debug("LoggerChatModel initialized with LLM: %s", llm)
 
     def __call__(self, messages: List[Dict[str, str]]) -> str:
-        logger.debug("Entering __call__ method with messages: %s", messages)
+        logger.debug("Entering __call__ with messages: %s", messages)
         while True:
             try:
                 logger.debug("Attempting to call the LLM with messages")

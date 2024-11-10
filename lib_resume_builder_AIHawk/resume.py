@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional, Union
 import yaml
-from pydantic import BaseModel, EmailStr, HttpUrl
-
+from pydantic import BaseModel, EmailStr, HttpUrl, Field
 
 
 class PersonalInformation(BaseModel):
@@ -12,6 +11,7 @@ class PersonalInformation(BaseModel):
     country: Optional[str]
     city: Optional[str]
     address: Optional[str]
+    zip_code: Optional[str] = Field(None, min_length=5, max_length=10)
     phone_prefix: Optional[str]
     phone: Optional[str]
     email: Optional[EmailStr]
@@ -86,6 +86,7 @@ class LegalAuthorization(BaseModel):
     legally_allowed_to_work_in_us: Optional[str]
     requires_eu_sponsorship: Optional[str]
 
+
 class Resume(BaseModel):
     personal_information: Optional[PersonalInformation]
     education_details: Optional[List[EducationDetails]] = None
@@ -107,9 +108,6 @@ class Resume(BaseModel):
             # Parse the YAML string
             data = yaml.safe_load(yaml_str)
 
-            if not isinstance(data, dict):
-                raise ValueError("YAML data is not in dictionary format.")
-
             if 'education_details' in data:
                 for ed in data['education_details']:
                     if 'exam' in ed:
@@ -118,13 +116,7 @@ class Resume(BaseModel):
             # Create an instance of Resume from the parsed data
             super().__init__(**data)
         except yaml.YAMLError as e:
-            raise ValueError(f"Error parsing YAML file: {e}") from e
-        except ValueError as e:
-            raise ValueError(f"Value error during YAML processing: {e}") from e
-        except TypeError as e:
-            raise TypeError(f"Type error during YAML processing: {e}") from e
-        except KeyError as e:
-            raise KeyError(f"Missing key in YAML data: {e}") from e
+            raise ValueError("Error parsing YAML file.") from e
         except Exception as e:
             raise Exception(f"Unexpected error while parsing YAML: {e}") from e
 
@@ -132,17 +124,16 @@ class Resume(BaseModel):
         try:
             return PersonalInformation(**data)
         except TypeError as e:
-            raise TypeError(f"Invalid data format for PersonalInformation: {e}") from e
+            raise TypeError(f"Invalid data for PersonalInformation: {e}") from e
+        except AttributeError as e:
+            raise AttributeError(f"AttributeError in PersonalInformation: {e}") from e
         except Exception as e:
-            raise Exception(f"Error processing PersonalInformation: {e}") from e
+            raise Exception(f"Unexpected error in PersonalInformation processing: {e}") from e
 
     def _process_education_details(self, data: List[Dict[str, Any]]) -> List[EducationDetails]:
         education_list = []
         for edu in data:
             try:
-                if not isinstance(edu, dict):
-                    raise ValueError(f"Expected dictionary for education details but got {type(edu).__name__}.")
-                
                 exams = [Exam(name=k, grade=v) for k, v in edu.get('exam', {}).items()]
                 education = EducationDetails(
                     education_level=edu.get('education_level'),
@@ -157,18 +148,17 @@ class Resume(BaseModel):
             except KeyError as e:
                 raise KeyError(f"Missing field in education details: {e}") from e
             except TypeError as e:
-                raise TypeError(f"Invalid data format for EducationDetails: {e}") from e
+                raise TypeError(f"Invalid data for Education: {e}") from e
+            except AttributeError as e:
+                raise AttributeError(f"AttributeError in Education: {e}") from e
             except Exception as e:
-                raise Exception(f"Error processing EducationDetails: {e}") from e
+                raise Exception(f"Unexpected error in Education processing: {e}") from e
         return education_list
 
     def _process_experience_details(self, data: List[Dict[str, Any]]) -> List[ExperienceDetails]:
         experience_list = []
         for exp in data:
             try:
-                if not isinstance(exp, dict):
-                    raise ValueError(f"Expected dictionary for experience details but got {type(exp).__name__}.")
-                
                 key_responsibilities = [
                     Responsibility(description=list(resp.values())[0])
                     for resp in exp.get('key_responsibilities', [])
@@ -187,9 +177,11 @@ class Resume(BaseModel):
             except KeyError as e:
                 raise KeyError(f"Missing field in experience details: {e}") from e
             except TypeError as e:
-                raise TypeError(f"Invalid data format for ExperienceDetails: {e}") from e
+                raise TypeError(f"Invalid data for Experience: {e}") from e
+            except AttributeError as e:
+                raise AttributeError(f"AttributeError in Experience: {e}") from e
             except Exception as e:
-                raise Exception(f"Error processing ExperienceDetails: {e}") from e
+                raise Exception(f"Unexpected error in Experience processing: {e}") from e
         return experience_list
 
 

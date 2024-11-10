@@ -53,7 +53,7 @@ The results should be provided in html format, Provide only the html code for th
 
 
 prompt_working_experience_template = """
-- **Template to Use**
+2. **Format** the output in **HTML** using the following template:
 ```
 <section id="work-experience">
     <h2>Work Experience</h2>

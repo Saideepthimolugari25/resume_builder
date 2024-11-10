@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='lib_resume_builder_AIHawk',
-    version='0.1',
+    version='0.2',
     description='A package to generate AI-assisted resumes using GPT models',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -15,6 +15,10 @@ setup(
         'langchain-community',
         'langchain-core',
         'langchain-openai',
+        'langchain-google-genai',
+        'langchain-ollama',
+        'langchain-anthropic',
+        'playwright',
         'langchain-text-splitters',
         'langsmith',
         'openai',
@@ -24,6 +28,7 @@ setup(
         'inquirer',
         'faiss-cpu',
         'pydantic',
+        'loguru',
         'pydantic[email]',
         'pdfminer.six',
     ],
@@ -34,4 +39,5 @@ setup(
     ],
     python_requires='>=3.10',  
     include_package_data=True,  # Include altri file indicati nel MANIFEST.in
+    maintainer='queukat',
 )

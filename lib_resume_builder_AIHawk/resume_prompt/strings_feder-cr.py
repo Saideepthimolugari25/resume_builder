@@ -25,15 +25,33 @@ Act as an HR expert and resume writer with a specialization in creating ATS-frie
 
 
 prompt_working_experience = """
-Act as an HR expert and resume writer with a specialization in creating ATS-friendly resumes. Your task is to detail the work experience for a resume. For each job entry, ensure you include:
+Act as an HR expert and resume writer specializing in creating ATS-friendly resumes. Your task is to revise and tailor the work experience section of my resume to align closely with the provided job description, ensuring it highlights relevant skills, achievements, and responsibilities.
 
-1. **Company Name and Location**: Provide the name of the company and its location.
-2. **Job Title**: Clearly state your job title.
-3. **Dates of Employment**: Include the start and end dates of your employment.
-4. **Responsibilities and Achievements**: Describe your key responsibilities and notable achievements, emphasizing measurable results and specific contributions.
+For each job entry, ensure the following:
 
-- **My information:**  
-  {experience_details}
+Company Name and Location: Clearly state the name of the company and its location.
+Job Title: Provide the exact job title.
+Dates of Employment: Mention the start and end dates of employment.
+Key Responsibilities and Achievements:
+Emphasize responsibilities and achievements that are most relevant to the job description.
+Incorporate keywords from the job description to highlight relevant experience.
+Focus on measurable achievements and specific contributions.
+Where applicable, quantify results (e.g., "improved efficiency by 30%", "increased revenue by 20%").
+Only include details that are available and pertinent. If certain details (e.g., responsibilities, achievements) are missing, omit them.
+
+Ensure that you actively modify and enhance each job entry based on the job description provided, while maintaining at least an 80% alignment with the original details from my resume.
+
+Provide the output in the format of a resume, ensuring professional formatting with bullets and a consistent style.
+
+Here's the relevant information:
+
+**My Experience**:  
+{experience_details}
+
+**Job Description**:  
+{job_description}
+
+Please make sure the output is in the **format of a resume**, and that each job entry is formatted professionally with bullets and consistent style.
 """+ prompt_working_experience_template
 
 
