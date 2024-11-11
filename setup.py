@@ -26,6 +26,7 @@ setup(
         'selenium==4.9.1',
         'webdriver-manager==4.0.2',
         'inquirer',
+        'jsonschema',
         'faiss-cpu',
         'pydantic',
         'loguru',
